@@ -73,6 +73,8 @@ def main():
     initial_allocation_2 = amount_TSLA / initial_amount
 
     st.divider()
+    st.write(pd.to_datetime('today').tz_localize('EST'))
+
     if st.button('Train'):
         st.write('Model was trained!')
 
@@ -83,7 +85,7 @@ def main():
         # Last business dates
         nyse = mcal.get_calendar('NYSE')
 
-        end_date = pd.to_datetime('today')
+        end_date = pd.to_datetime('today').tz_localize('EST')
         start_date = end_date - pd.to_timedelta(30, unit='d')
         days = nyse.schedule(start_date=start_date, end_date=end_date)
 
