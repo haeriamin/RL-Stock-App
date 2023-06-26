@@ -1,3 +1,8 @@
+# cd \Work\RL-Stock-App
+# conda activate rl_app
+# streamlit run Home.py
+
+import os
 import warnings
 import pandas as pd
 import streamlit as st
@@ -8,7 +13,7 @@ import pandas_market_calendars as mcal
 from src import params, predict, train, util
 
 
-tz = timezone('EST')
+tz = timezone('US/Eastern')
 warnings.filterwarnings("ignore")
 
 
@@ -24,12 +29,12 @@ def main():
 
     amount_AAPL = st.sidebar.number_input(
         'AAPL share [$]',
-        value = 5.,
+        value = 10.,
         step = 0.01
     )
     amount_TSLA = st.sidebar.number_input(
         'TSLA share [$]',
-        value = 5.,
+        value = 10.,
         step = 0.01
     )
     commission_perc = st.sidebar.number_input(
@@ -51,13 +56,15 @@ def main():
     if end_date.hour < 9:
         end_date = end_date - pd.to_timedelta(1, unit='d')
 
-    start_date = end_date - pd.to_timedelta(30, unit='d')
-    days = nyse.schedule(start_date=start_date, end_date=end_date)
+    days = nyse.schedule(
+        start_date = end_date - pd.to_timedelta(30, unit='d'),
+        end_date = end_date
+    )
 
-    length = 4
-    start_date = str(days.index[-length])[:10]
-    end_date = str(end_date)[:10]
-    date = [start_date, end_date]
+    length = 5
+    start_date_str = str(days.index[-length])[:10]
+    end_date_str = str(end_date + pd.to_timedelta(1, unit='d'))[:10]
+    date = [start_date_str, end_date_str]
 
     # Params
     env_params['initial_amount'] = initial_amount
@@ -66,6 +73,24 @@ def main():
 
     st.divider()
     st.write(pd.to_datetime(datetime.now(tz)))
+    path = f'src/{model_name}.zip'
+    create_time = os.path.getmtime(path)
+    create_date = datetime.fromtimestamp(create_time)
+    st.write('Model has been trained on', create_date)
+
+    if st.button('Predict'):
+        next_allocation = predict.main(
+            data_params,
+            env_params,
+            model_name,
+            date,
+        )
+        st.write('Next allocation')
+        next_allocation.rename(index={
+            str(end_date)[:10]:
+            str(end_date + pd.to_timedelta(1, unit='d'))[:10]
+            }, inplace=True)
+        st.write(next_allocation.tail(1))
 
     if st.button('Re-train'):
         with st.spinner('Wait for it...'):
@@ -78,16 +103,6 @@ def main():
                 date
             )
         st.write('Model was re-trained!')
-
-    if st.button('Predict'):
-        predict.main(
-            data_params,
-            env_params,
-            model_name,
-            date,
-        )
-    
-
 
 if __name__ == '__main__':
     main()

@@ -1,4 +1,5 @@
 import pandas as pd
+import streamlit as st
 
 from src import downloader, preprocessor
 
@@ -9,6 +10,9 @@ def main(stocks, date=None):
         end_date = date[1],
         ticker_list = stocks,
     ).fetch_data()
+    
+    st.write('Data')
+    st.write(df.tail(4))
     
     fe = preprocessor.FeatureEngineer(
         use_technical_indicator = True,

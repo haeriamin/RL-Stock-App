@@ -24,14 +24,15 @@ def main(data_params, env_kwargs, model_name, date):
         cwd = os.path.join('src', model_name),
         deterministic = True,
     )
-    st.write('Actions')
-    st.dataframe(df_actions_ppo)
+    next_allocation = df_actions_ppo * env_kwargs['initial_amount']
+
+    return next_allocation
 
     # Account value calculation
     ppo_cumprod = (df_daily_return_ppo.daily_return + 1).cumprod() - 1
     account_value = env_kwargs['initial_amount'] + (env_kwargs['initial_amount'] * ppo_cumprod)
 
-    st.write('Account value')
-    st.dataframe(account_value)
+    # st.write('Account value')
+    # st.dataframe(account_value)
 
     # return account_value.iat[-1], df_actions_ppo.iloc[-1, :].values.flatten().tolist()
