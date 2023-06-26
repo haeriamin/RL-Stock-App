@@ -230,7 +230,7 @@ class StockPortfolioEnv(gym.Env):
         return df_actions
 
 
-    def _seed(self, seed=None):
+    def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 

@@ -17,7 +17,6 @@ def main(stocks, date=None):
     )
 
     df = fe.preprocess_data(df)
-    # print(df.head())
 
     # Add covariance matrix as states
     df = df.sort_values(['date', 'tic'], ignore_index=True)

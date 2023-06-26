@@ -68,7 +68,7 @@ class Agent:
         )
 
 
-    def train(self, model, train_kwargs=None):
+    def train(self, model, train_kwargs=None):            
         model = model.learn(
             callback = TensorboardCallback(),
             **train_kwargs,
