@@ -53,19 +53,14 @@ def main():
     )
     st.markdown('# RL Stock App')
 
-    initial_amount = st.sidebar.number_input(
-        'Initial amount [$]',
-        value = 10.,
+    amount_AAPL = st.sidebar.number_input(
+        'AAPL share [$]',
+        value = 5.,
         step = 0.01
     )
-    initial_allocation_1 = st.sidebar.number_input(
-        'Initial allocation AAPL',
-        value = 0.5,
-        step = 0.01
-    )
-    initial_allocation_2 = st.sidebar.number_input(
-        'Initial allocation TSLA',
-        value = 0.5,
+    amount_TSLA = st.sidebar.number_input(
+        'TSLA share [$]',
+        value = 5.,
         step = 0.01
     )
     commission_perc = st.sidebar.number_input(
@@ -73,9 +68,15 @@ def main():
         value = 2.,
         step = 0.01
     )
+    initial_amount = amount_AAPL + amount_TSLA
+    initial_allocation_1 = amount_AAPL / initial_amount
+    initial_allocation_2 = amount_TSLA / initial_amount
 
     st.divider()
-    if st.button('Generate'):
+    if st.button('Train'):
+        st.write('Model was trained!')
+
+    if st.button('Predict'):
         # Get params
         data_params, env_params, model_params, _ = params.main()
 
@@ -103,6 +104,7 @@ def main():
             model_params['model_name'],
             date,
         )
+    
 
 
 if __name__ == '__main__':
