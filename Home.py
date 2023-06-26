@@ -76,7 +76,7 @@ def main():
     path = f'src/{model_name}.zip'
     create_time = os.path.getmtime(path)
     create_date = datetime.fromtimestamp(create_time)
-    st.write('Model has been trained on', create_date)
+    st.write('Model has been trained on', create_date - pd.to_timedelta(4, unit='h'))
 
     if st.button('Predict'):
         next_allocation = predict.main(
