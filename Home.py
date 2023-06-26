@@ -2,11 +2,14 @@ import os
 import warnings
 import pandas as pd
 import streamlit as st
+from pytz import timezone
+from datetime import datetime
 import pandas_market_calendars as mcal
 
 from src import params, data, model, agent, util
 
 
+tz = timezone('EST')
 warnings.filterwarnings("ignore")
 
 
@@ -73,7 +76,7 @@ def main():
     initial_allocation_2 = amount_TSLA / initial_amount
 
     st.divider()
-    st.write(pd.to_datetime('today').tz_localize('EST'))
+    st.write(pd.to_datetime(datetime.now(tz)))
 
     if st.button('Train'):
         st.write('Model was trained!')
@@ -85,7 +88,7 @@ def main():
         # Last business dates
         nyse = mcal.get_calendar('NYSE')
 
-        end_date = pd.to_datetime('today').tz_localize('EST')
+        end_date = pd.to_datetime(datetime.now(tz))
         start_date = end_date - pd.to_timedelta(30, unit='d')
         days = nyse.schedule(start_date=start_date, end_date=end_date)
 
